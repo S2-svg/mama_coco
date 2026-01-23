@@ -157,7 +157,7 @@ function initializeData() {
                 stock: 12,
                 image: "laptop",
                 promotion: false,
-                discount: 0,
+                discount: 0,    
                 rating: 4.6,
                 reviews: 37,
                 reviewsList: [],
