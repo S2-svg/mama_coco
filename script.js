@@ -668,9 +668,10 @@ function renderCustomerProducts() {
 
         const productCard = document.createElement('div');
         productCard.className = `product-card customer-product-card ${product.promotion ? 'promo' : ''}`;
+        const imageFile = (product.id - 1) % 21 === 0 ? 'image.png' : (product.id - 1) % 21 === 1 ? 'image copy.png' : 'image copy ' + ((product.id - 1) % 21) + '.png';
         productCard.innerHTML = `
                     <div class="product-image">
-                        <i class="fas fa-${product.type || 'laptop'}"></i>
+                        <img src="image/${imageFile}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: contain;">
                         ${product.promotion ? '<div style="position: absolute; top: 10px; right: 10px; background: var(--accent); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">-' + product.discount + '%</div>' : ''}
                     </div>
                     <div class="product-info">
