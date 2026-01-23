@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Computer & Accessories</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">
+                <i class="fas fa-laptop"></i>
+                <span>TechStore</span>
+            </div>
+            <div class="role-switcher">
+                <button class="role-btn active" id="customerRoleBtn">Customer</button>
+                <button class="role-btn" id="adminRoleBtn">Admin</button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="cart-icon" id="cartIcon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            <div class="admin-profile">
+                <div class="profile-avatar">AD</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;" id="userName">Customer</div>
+                    <div style="font-size: 0.8rem; color: var(--gray);" id="userRole">Guest</div>
+                </div>
+                <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+            </div>
+            <button class="btn btn-danger btn-sm logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Admin Login</h3>
+                <button class="modal-close" id="closeLoginModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="login-logo">
+                    <i class="fas fa-laptop"></i>
+                    <h2>TechStore Admin</h2>
+                    <p>Enter your credentials to access the admin panel</p>
+                </div>
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-input" id="username" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="password" placeholder="Enter your password"
+                            required>
+                        <div class="login-error" id="loginError">Invalid username or password</div>
+                    </div>
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <div style="margin-top: 1.5rem; text-align: center; color: var(--gray); font-size: 0.85rem;">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <p>Username: <strong>admin</strong></p>
+                    <p>Password: <strong>admin123</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar (Only visible in Admin mode) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Navigation</div>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <i class="fas fa-laptop"></i>
+                    <span>Products</span>
+                    <span class="nav-badge" id="productCount">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Orders</span>
+                    <span class="nav-badge" id="orderCount">0</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Analytics</div>
+                <a href="#" class="nav-item" data-page="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-page="strategy">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Strategy</span>
+                </a>
+                <a href="#" class="nav-item" data-page="financial">
+                    <i class="fas fa-wallet"></i>
+                    <span>Financial</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Settings</div>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item" data-page="help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Customer View -->
+            <div id="customerView" class="customer-view">
+                <div class="hero">
+                    <h1>Welcome to TechStore</h1>
+                    <p>Your one-stop shop for the latest computers and accessories</p>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search products..." id="searchInput">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="category-filter">
+                        <button class="category-btn active" data-category="all">All Products</button>
+                        <button class="category-btn" data-category="laptop">Laptops</button>
+                        <button class="category-btn" data-category="desktop">Desktops</button>
+                        <button class="category-btn" data-category="monitor">Monitors</button>
+                        <button class="category-btn" data-category="accessory">Accessories</button>
+                    </div>
+                    <div class="products-grid" id="customerProductsGrid">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="dashboardPage" class="admin-page">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard Overview</h1>
+                    <p class="page-subtitle">Welcome back, Admin! Here's what's happening with your store today.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="productGrowth">12%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalProducts">0</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="orderGrowth">24%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="revenueGrowth">18%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalRevenue">$0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="promoGrowth">8%</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="activePromotions">0</div>
+                        <div class="stat-label">Active Promotions</div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Sales Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Sales Overview</h3>
+                            <div class="chart-period">
+                                <button class="period-btn active" data-period="week">Week</button>
+                                <button class="period-btn" data-period="month">Month</button>
+                                <button class="period-btn" data-period="year">Year</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="salesChart">
+                                <!-- Chart bars will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Recent Activity</h3>
+                        </div>
+                        <div class="activity-list" id="recentActivity">
+                            <!-- Activity items will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent Orders</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-outline btn-sm" id="viewAllOrders">
+                                <i class="fas fa-eye"></i> View All
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addOrderBtn">
+                                <i class="fas fa-plus"></i> Add Order
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div id="productsPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Product Management</h1>
+                    <p class="page-subtitle">Manage your products, inventory, and promotions</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">All Products</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-outline btn-sm" id="exportProducts">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addProductBtn">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                    </div>
+                    <div class="products-grid" id="productsGridAdmin">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Page -->
+            <div id="ordersPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Order Management</h1>
+                    <p class="page-subtitle">View and manage customer orders</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">All Orders</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-outline btn-sm" id="filterOrders">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="createOrderBtn">
+                                <i class="fas fa-plus"></i> Create Order
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allOrdersTable">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analyticsPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Analytics Dashboard</h1>
+                    <p class="page-subtitle">Detailed insights and performance metrics</p>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="conversionRate">3.2%</div>
+                        <div class="metric-label">Conversion Rate</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> 12% from last month
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgOrderValue">$245.50</div>
+                        <div class="metric-label">Average Order Value</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> 8% from last month
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value" id="customerRetention">78%</div>
+                        <div class="metric-label">Customer Retention</div>
+                        <div class="metric-change negative">
+                            <i class="fas fa-arrow-down"></i> 2% from last month
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value" id="siteTraffic">45.2K</div>
+                        <div class="metric-label">Monthly Visitors</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> 15% from last month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Traffic Sources</h3>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="trafficSourcesChart">
+                                <!-- Traffic sources chart -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Product Performance</h3>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="productPerformanceChart">
+                                <!-- Product performance chart -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Top Products by Revenue</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Units Sold</th>
+                                <th>Revenue</th>
+                                <th>Profit Margin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topProductsTable">
+                            <!-- Top products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Strategy Page -->
+            <!-- Strategy Page -->
+            <div id="strategyPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Business Strategy & Growth Plan</h1>
+                    <p class="page-subtitle">Comprehensive business planning and strategic development</p>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">SWOT Analysis</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item" style="background: #d1fae5;">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Strengths</h4>
+                                    <p>Wide product range, Strong brand reputation, Excellent customer service</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="background: #fee2e2;">
+                                <div class="activity-icon" style="background: #fee2e2; color: #dc2626;">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Weaknesses</h4>
+                                    <p>Limited physical stores, High shipping costs, Inventory management challenges</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="background: #dbeafe;">
+                                <div class="activity-icon blue">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Opportunities</h4>
+                                    <p>E-commerce growth, New product categories, International expansion</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="background: #fef3c7;">
+                                <div class="activity-icon" style="background: #fef3c7; color: #d97706;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Threats</h4>
+                                    <p>Competition from Amazon, Economic downturn, Supply chain disruptions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Strategic Goals</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon blue">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Increase Market Share</h4>
+                                    <p>Target: 20% growth in Q4 2024</p>
+                                </div>
+                                <div class="activity-time">85%</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Revenue Growth</h4>
+                                    <p>Target: 30% YoY revenue increase</p>
+                                </div>
+                                <div class="activity-time">72%</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon purple">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Customer Acquisition</h4>
+                                    <p>Target: 10,000 new customers</p>
+                                </div>
+                                <div class="activity-time">65%</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon orange">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Inventory Optimization</h4>
+                                    <p>Target: Reduce stockouts by 40%</p>
+                                </div>
+                                <div class="activity-time">45%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Plan Section -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Comprehensive Business Plan</h3>
+                        <button class="btn btn-primary btn-sm" id="downloadBusinessPlan">
+                            <i class="fas fa-download"></i> Export Plan
+                        </button>
+                    </div>
+                    <div class="business-plan-content" style="padding: 1.5rem;">
+                        <!-- Investment -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <h4>1. Investment & Capital</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <p><strong>Starting Capital:</strong> $20,000</p>
+                                <div class="capital-allocation">
+                                    <div class="allocation-item">
+                                        <span class="allocation-label">Product Inventory</span>
+                                        <span class="allocation-amount">$12,000 (60%)</span>
+                                        <div class="allocation-bar">
+                                            <div class="bar-fill" style="width: 60%; background: var(--primary);"></div>
+                                        </div>
+                                    </div>
+                                    <div class="allocation-item">
+                                        <span class="allocation-label">Marketing & Promotion</span>
+                                        <span class="allocation-amount">$4,000 (20%)</span>
+                                        <div class="allocation-bar">
+                                            <div class="bar-fill" style="width: 20%; background: var(--accent);"></div>
+                                        </div>
+                                    </div>
+                                    <div class="allocation-item">
+                                        <span class="allocation-label">Staff & Operations</span>
+                                        <span class="allocation-amount">$3,000 (15%)</span>
+                                        <div class="allocation-bar">
+                                            <div class="bar-fill" style="width: 15%; background: #10b981;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="allocation-item">
+                                        <span class="allocation-label">Contingency Fund</span>
+                                        <span class="allocation-amount">$1,000 (5%)</span>
+                                        <div class="allocation-bar">
+                                            <div class="bar-fill" style="width: 5%; background: var(--warning);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <h4>2. Strategic Location</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <p><strong>Location:</strong> City Center Tech Hub</p>
+                                <div class="location-advantages">
+                                    <div class="advantage-item">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <span>Proximity to universities and colleges</span>
+                                    </div>
+                                    <div class="advantage-item">
+                                        <i class="fas fa-briefcase"></i>
+                                        <span>Close to business districts and offices</span>
+                                    </div>
+                                    <div class="advantage-item">
+                                        <i class="fas fa-gamepad"></i>
+                                        <span>Near gaming communities and e-sports centers</span>
+                                    </div>
+                                    <div class="advantage-item">
+                                        <i class="fas fa-subway"></i>
+                                        <span>Excellent public transportation access</span>
+                                    </div>
+                                </div>
+                                <p style="margin-top: 1rem;"><strong>Target Foot Traffic:</strong> 500+ daily visitors
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Target Customers -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h4>3. Target Customer Segments</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="customer-grid">
+                                    <div class="customer-segment">
+                                        <div class="segment-icon" style="background: #dbeafe;">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                        <h5>Students</h5>
+                                        <p>Need computers for studying, research, and assignments</p>
+                                        <div class="segment-stats">
+                                            <span>Market Size: 35%</span>
+                                            <span>Avg. Budget: $800-1,200</span>
+                                        </div>
+                                    </div>
+                                    <div class="customer-segment">
+                                        <div class="segment-icon" style="background: #dcfce7;">
+                                            <i class="fas fa-briefcase"></i>
+                                        </div>
+                                        <h5>Office Workers</h5>
+                                        <p>Require reliable computers for productivity and remote work</p>
+                                        <div class="segment-stats">
+                                            <span>Market Size: 40%</span>
+                                            <span>Avg. Budget: $1,200-2,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="customer-segment">
+                                        <div class="segment-icon" style="background: #f3e8ff;">
+                                            <i class="fas fa-gamepad"></i>
+                                        </div>
+                                        <h5>Gamers</h5>
+                                        <p>Need high-performance systems for gaming and streaming</p>
+                                        <div class="segment-stats">
+                                            <span>Market Size: 25%</span>
+                                            <span>Avg. Budget: $1,500-3,000+</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Quality Tiers -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <h4>4. Product Quality Tiers</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="quality-tiers">
+                                    <div class="tier-card">
+                                        <div class="tier-header" style="background: #e2e8f0;">
+                                            <h5>Basic Tier</h5>
+                                            <span class="tier-price">$500 - $1,000</span>
+                                        </div>
+                                        <div class="tier-content">
+                                            <ul>
+                                                <li>For students and basic office work</li>
+                                                <li>Entry-level processors (Intel i3, AMD Ryzen 3)</li>
+                                                <li>8GB RAM, 256GB SSD</li>
+                                                <li>Integrated graphics</li>
+                                            </ul>
+                                            <div class="tier-target">
+                                                <strong>Target:</strong> Students, Basic Users
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tier-card">
+                                        <div class="tier-header" style="background: #dbeafe;">
+                                            <h5>Professional Tier</h5>
+                                            <span class="tier-price">$1,000 - $2,000</span>
+                                        </div>
+                                        <div class="tier-content">
+                                            <ul>
+                                                <li>For professionals and moderate gaming</li>
+                                                <li>Mid-range processors (Intel i5, AMD Ryzen 5)</li>
+                                                <li>16GB RAM, 512GB SSD</li>
+                                                <li>Dedicated graphics (GTX 1660, RTX 3060)</li>
+                                            </ul>
+                                            <div class="tier-target">
+                                                <strong>Target:</strong> Office Workers, Casual Gamers
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tier-card">
+                                        <div class="tier-header" style="background: #f3e8ff;">
+                                            <h5>Premium Tier</h5>
+                                            <span class="tier-price">$2,000+</span>
+                                        </div>
+                                        <div class="tier-content">
+                                            <ul>
+                                                <li>For gamers and business users</li>
+                                                <li>High-end processors (Intel i7/i9, AMD Ryzen 7/9)</li>
+                                                <li>32GB+ RAM, 1TB+ SSD</li>
+                                                <li>High-end graphics (RTX 4070+)</li>
+                                            </ul>
+                                            <div class="tier-target">
+                                                <strong>Target:</strong> Gamers, Creative Professionals
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Services -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-concierge-bell"></i>
+                                </div>
+                                <h4>5. Value-Added Services</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="services-grid">
+                                    <div class="service-item">
+                                        <div class="service-icon">
+                                            <i class="fas fa-cogs"></i>
+                                        </div>
+                                        <h6>Computer Setup & Installation</h6>
+                                        <p>Professional setup with software installation and optimization</p>
+                                    </div>
+                                    <div class="service-item">
+                                        <div class="service-icon">
+                                            <i class="fas fa-headset"></i>
+                                        </div>
+                                        <h6>Technical Support</h6>
+                                        <p>Free 6-month technical support for all purchases</p>
+                                    </div>
+                                    <div class="service-item">
+                                        <div class="service-icon">
+                                            <i class="fas fa-tools"></i>
+                                        </div>
+                                        <h6>Repair Services</h6>
+                                        <p>On-site and off-site repair services with warranty</p>
+                                    </div>
+                                    <div class="service-item">
+                                        <div class="service-icon">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </div>
+                                        <h6>Hardware Upgrades</h6>
+                                        <p>RAM, storage, and component upgrades</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marketing Strategy -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <h4>6. Marketing & Promotion Strategy</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="marketing-channels">
+                                    <div class="channel-item">
+                                        <div class="channel-icon" style="color: #1877F2;">
+                                            <i class="fab fa-facebook"></i>
+                                        </div>
+                                        <div class="channel-info">
+                                            <h6>Facebook</h6>
+                                            <p>Targeted ads, community groups, live demonstrations</p>
+                                            <span class="channel-metrics">Reach: 10,000+ monthly</span>
+                                        </div>
+                                    </div>
+                                    <div class="channel-item">
+                                        <div class="channel-icon" style="color: #000000;">
+                                            <i class="fab fa-tiktok"></i>
+                                        </div>
+                                        <div class="channel-info">
+                                            <h6>TikTok</h6>
+                                            <p>Short videos, gaming highlights, tech tutorials</p>
+                                            <span class="channel-metrics">Engagement: 5,000+ views</span>
+                                        </div>
+                                    </div>
+                                    <div class="channel-item">
+                                        <div class="channel-icon" style="color: #E4405F;">
+                                            <i class="fab fa-instagram"></i>
+                                        </div>
+                                        <div class="channel-info">
+                                            <h6>Instagram</h6>
+                                            <p>Product showcases, customer reviews, stories</p>
+                                            <span class="channel-metrics">Followers: 2,500+</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="promotion-strategy">
+                                    <h5>Promotion Strategy:</h5>
+                                    <ul>
+                                        <li>Short-term promotions (3-7 days duration)</li>
+                                        <li>Value-added promotions (free installation, extended warranty)</li>
+                                        <li>Seasonal discounts (Back to School, Holiday Season)</li>
+                                        <li>Bundle offers (Computer + Accessories)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Training Services -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <h4>7. Training & Education Services</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="training-services">
+                                    <div class="training-item">
+                                        <h5>Video Editing Workshop</h5>
+                                        <p>Teach customers how to edit videos using professional software</p>
+                                        <div class="training-details">
+                                            <span><i class="fas fa-clock"></i> 8 hours</span>
+                                            <span><i class="fas fa-dollar-sign"></i> $99</span>
+                                            <span><i class="fas fa-users"></i> Max: 15 participants</span>
+                                        </div>
+                                    </div>
+                                    <div class="training-item">
+                                        <h5>Social Media Content Creation</h5>
+                                        <p>How to create engaging content for social media platforms</p>
+                                        <div class="training-details">
+                                            <span><i class="fas fa-clock"></i> 6 hours</span>
+                                            <span><i class="fas fa-dollar-sign"></i> $79</span>
+                                            <span><i class="fas fa-users"></i> Max: 20 participants</span>
+                                        </div>
+                                    </div>
+                                    <div class="training-item">
+                                        <h5>Digital Marketing Basics</h5>
+                                        <p>Introduction to digital marketing strategies and tools</p>
+                                        <div class="training-details">
+                                            <span><i class="fas fa-clock"></i> 10 hours</span>
+                                            <span><i class="fas fa-dollar-sign"></i> $149</span>
+                                            <span><i class="fas fa-users"></i> Max: 12 participants</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Revenue Streams -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-money-bill-trend-up"></i>
+                                </div>
+                                <h4>8. Revenue Streams</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="revenue-streams">
+                                    <div class="revenue-item">
+                                        <div class="revenue-header">
+                                            <h5>Computer Sales</h5>
+                                            <span class="revenue-amount">$350 avg/unit</span>
+                                        </div>
+                                        <div class="revenue-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 60%;"></div>
+                                            </div>
+                                            <span class="revenue-percentage">60% of total revenue</span>
+                                        </div>
+                                    </div>
+                                    <div class="revenue-item">
+                                        <div class="revenue-header">
+                                            <h5>Digital Marketing Services</h5>
+                                            <span class="revenue-amount">$500 avg/service</span>
+                                        </div>
+                                        <div class="revenue-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 25%;"></div>
+                                            </div>
+                                            <span class="revenue-percentage">25% of total revenue</span>
+                                        </div>
+                                    </div>
+                                    <div class="revenue-item">
+                                        <div class="revenue-header">
+                                            <h5>IT Support Services</h5>
+                                            <span class="revenue-amount">$300 avg/service</span>
+                                        </div>
+                                        <div class="revenue-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 15%;"></div>
+                                            </div>
+                                            <span class="revenue-percentage">15% of total revenue</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="revenue-summary">
+                                    <div class="summary-item">
+                                        <span>Projected Monthly Revenue:</span>
+                                        <strong>$25,000</strong>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span>Gross Profit Margin:</span>
+                                        <strong>35%</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Brands -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <h4>9. Trusted Product Brands</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="brands-grid">
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #007DB8;">
+                                            <i class="fab fa-dell"></i>
+                                        </div>
+                                        <span>Dell</span>
+                                    </div>
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #E2231A;">
+                                            <i class="fab fa-lenovo"></i>
+                                        </div>
+                                        <span>Lenovo</span>
+                                    </div>
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #83B81A;">
+                                            <i class="fab fa-acer"></i>
+                                        </div>
+                                        <span>Acer</span>
+                                    </div>
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #000000;">
+                                            <i class="fab fa-asus"></i>
+                                        </div>
+                                        <span>ASUS</span>
+                                    </div>
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #A2AAAD;">
+                                            <i class="fab fa-apple"></i>
+                                        </div>
+                                        <span>Apple</span>
+                                    </div>
+                                    <div class="brand-item">
+                                        <div class="brand-logo" style="background: #0096D6;">
+                                            <i class="fab fa-hp"></i>
+                                        </div>
+                                        <span>HP</span>
+                                    </div>
+                                </div>
+                                <div class="brand-stats">
+                                    <div class="stat-item">
+                                        <span>Most Popular:</span>
+                                        <strong>Dell & ASUS</strong>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Highest Margin:</span>
+                                        <strong>Apple Products</strong>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Fastest Growing:</span>
+                                        <strong>Lenovo Gaming</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Suppliers & Inventory -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-warehouse"></i>
+                                </div>
+                                <h4>10. Supplier & Inventory Management</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="supplier-info">
+                                    <div class="supplier-item">
+                                        <h5>Primary Suppliers</h5>
+                                        <ul>
+                                            <li>TechDistributors Inc. (Wholesale partner)</li>
+                                            <li>Global Electronics Ltd. (Direct imports)</li>
+                                            <li>Local Manufacturers (Custom builds)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="supplier-item">
+                                        <h5>Inventory Strategy</h5>
+                                        <ul>
+                                            <li>Real-time inventory tracking system</li>
+                                            <li>Automated reorder points</li>
+                                            <li>Safety stock for high-demand items</li>
+                                            <li>Just-in-time ordering for slow movers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="inventory-metrics">
+                                    <div class="metric-item">
+                                        <span>Inventory Turnover:</span>
+                                        <strong>6x per year</strong>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span>Stockout Rate:</span>
+                                        <strong>2% (Target < 5%)</strong>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span>Carrying Cost:</span>
+                                        <strong>18% of inventory value</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Plan -->
+                        <div class="business-plan-section">
+                            <div class="plan-section-header">
+                                <div class="plan-section-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h4>11. Future Growth & Expansion</h4>
+                            </div>
+                            <div class="plan-section-content">
+                                <div class="growth-timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-date">Q3 2024</div>
+                                        <div class="timeline-content">
+                                            <h5>New Service Launch</h5>
+                                            <ul>
+                                                <li>Cloud storage solutions</li>
+                                                <li>Cybersecurity services</li>
+                                                <li>Website development</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-date">Q4 2024</div>
+                                        <div class="timeline-content">
+                                            <h5>Customer Support Enhancement</h5>
+                                            <ul>
+                                                <li>24/7 live chat support</li>
+                                                <li>Extended warranty options</li>
+                                                <li>On-site service expansion</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-date">Q1 2025</div>
+                                        <div class="timeline-content">
+                                            <h5>Technology Upgrades</h5>
+                                            <ul>
+                                                <li>5G integration for products</li>
+                                                <li>IoT device support</li>
+                                                <li>Smart home solutions</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-date">Q2 2025</div>
+                                        <div class="timeline-content">
+                                            <h5>Partnership Development</h5>
+                                            <ul>
+                                                <li>School & university partnerships</li>
+                                                <li>Corporate B2B contracts</li>
+                                                <li>Government procurement</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Plan Table -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Action Plan</h3>
+                        <button class="btn btn-primary btn-sm" id="addStrategyBtn">
+                            <i class="fas fa-plus"></i> Add Action
+                        </button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Action Item</th>
+                                <th>Responsible</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody id="strategyActionsTable">
+                            <tr>
+                                <td>Launch new product line</td>
+                                <td>Product Team</td>
+                                <td>2024-06-30</td>
+                                <td><span class="status-badge status-info">In Progress</span></td>
+                                <td><span class="status-badge status-danger">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>Optimize website SEO</td>
+                                <td>Marketing Team</td>
+                                <td>2024-05-15</td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                                <td><span class="status-badge status-warning">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td>Implement loyalty program</td>
+                                <td>Sales Team</td>
+                                <td>2024-07-31</td>
+                                <td><span class="status-badge status-info">In Progress</span></td>
+                                <td><span class="status-badge status-danger">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>Expand to new markets</td>
+                                <td>Business Development</td>
+                                <td>2024-12-31</td>
+                                <td><span class="status-badge status-warning">Pending</span></td>
+                                <td><span class="status-badge status-warning">Medium</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Financial Page -->
+            <div id="financialPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Financial Management</h1>
+                    <p class="page-subtitle">Financial reports, metrics, and projections</p>
+                </div>
+
+                <div class="financial-cards">
+                    <div class="financial-card">
+                        <div class="financial-header">
+                            <h3 class="financial-title">Revenue</h3>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i> 18%
+                            </div>
+                        </div>
+                        <div class="financial-amount" id="currentRevenue">$125,430</div>
+                        <div class="stat-label">Current Month</div>
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Target:</span>
+                                <span>$150,000</span>
+                            </div>
+                            <div style="background: var(--light-gray); height: 8px; border-radius: 4px;">
+                                <div style="background: var(--primary); width: 83%; height: 100%; border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="financial-card">
+                        <div class="financial-header">
+                            <h3 class="financial-title">Profit</h3>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i> 22%
+                            </div>
+                        </div>
+                        <div class="financial-amount" id="currentProfit">$45,320</div>
+                        <div class="stat-label">Current Month</div>
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Margin:</span>
+                                <span>36.1%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="financial-card">
+                        <div class="financial-header">
+                            <h3 class="financial-title">Expenses</h3>
+                            <div class="stat-trend negative">
+                                <i class="fas fa-arrow-down"></i> 5%
+                            </div>
+                        </div>
+                        <div class="financial-amount" id="currentExpenses">$80,110</div>
+                        <div class="stat-label">Current Month</div>
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Budget:</span>
+                                <span>$85,000</span>
+                            </div>
+                            <div style="background: var(--light-gray); height: 8px; border-radius: 4px;">
+                                <div style="background: #10b981; width: 94%; height: 100%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Income vs Expenses</h3>
+                            <div class="chart-period">
+                                <button class="period-btn active">Monthly</button>
+                                <button class="period-btn">Quarterly</button>
+                                <button class="period-btn">Yearly</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="incomeExpensesChart">
+                                <!-- Income vs expenses chart -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Cash Flow</h3>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="cashFlowChart">
+                                <!-- Cash flow chart -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Financial Statements</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-outline btn-sm" id="generateReportBtn">
+                                <i class="fas fa-file-pdf"></i> Generate Report
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addTransactionBtn">
+                                <i class="fas fa-plus"></i> Add Transaction
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financialTransactionsTable">
+                            <tr>
+                                <td>2024-03-15</td>
+                                <td>Product Sales Revenue</td>
+                                <td>Revenue</td>
+                                <td>$45,230</td>
+                                <td><span class="status-badge status-success">Income</span></td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-14</td>
+                                <td>Inventory Purchase</td>
+                                <td>Cost of Goods</td>
+                                <td>$18,500</td>
+                                <td><span class="status-badge status-danger">Expense</span></td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-13</td>
+                                <td>Marketing Campaign</td>
+                                <td>Marketing</td>
+                                <td>$5,200</td>
+                                <td><span class="status-badge status-danger">Expense</span></td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-12</td>
+                                <td>Subscription Revenue</td>
+                                <td>Recurring Revenue</td>
+                                <td>$12,450</td>
+                                <td><span class="status-badge status-success">Income</span></td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-11</td>
+                                <td>Salary Payments</td>
+                                <td>Payroll</td>
+                                <td>$32,000</td>
+                                <td><span class="status-badge status-danger">Expense</span></td>
+                                <td><span class="status-badge status-success">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Store Settings</h1>
+                    <p class="page-subtitle">Configure your store preferences and settings</p>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <div class="settings-section">
+                            <h3 class="settings-section-title">General Settings</h3>
+                            <div class="form-group">
+                                <label class="form-label">Store Name</label>
+                                <input type="text" class="form-input" id="storeName" value="TechStore">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Store Email</label>
+                                <input type="email" class="form-input" id="storeEmail" value="contact@techstore.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Currency</label>
+                                <select class="form-select" id="storeCurrency">
+                                    <option value="USD">US Dollar ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">British Pound (£)</option>
+                                    <option value="CAD">Canadian Dollar (C$)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Timezone</label>
+                                <select class="form-select" id="storeTimezone">
+                                    <option value="EST">Eastern Time (EST)</option>
+                                    <option value="CST">Central Time (CST)</option>
+                                    <option value="PST">Pacific Time (PST)</option>
+                                    <option value="GMT">GMT</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="settings-section-title">Store Features</h3>
+                            <div class="form-group"
+                                style="display: flex; justify-content: space-between; align-items: center;">
+                                <label class="form-label">Enable Online Payments</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group"
+                                style="display: flex; justify-content: space-between; align-items: center;">
+                                <label class="form-label">Enable Customer Reviews</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group"
+                                style="display: flex; justify-content: space-between; align-items: center;">
+                                <label class="form-label">Show Stock Levels</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group"
+                                style="display: flex; justify-content: space-between; align-items: center;">
+                                <label class="form-label">Enable Guest Checkout</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="settings-section-title">Tax Settings</h3>
+                            <div class="form-group">
+                                <label class="form-label">Tax Rate (%)</label>
+                                <input type="number" class="form-input" id="taxRate" value="10" min="0" max="50">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Shipping Cost ($)</label>
+                                <input type="number" class="form-input" id="shippingCost" value="9.99" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Free Shipping Threshold ($)</label>
+                                <input type="number" class="form-input" id="freeShipping" value="100" min="0">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help & Support Page -->
+            <div id="helpPage" class="admin-page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Help & Support</h1>
+                    <p class="page-subtitle">Get assistance and learn how to use the platform</p>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Quick Actions</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item" style="cursor: pointer;"
+                                onclick="showNotification('Opening documentation...', 'info')">
+                                <div class="activity-icon blue">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Documentation</h4>
+                                    <p>Read the complete user guide</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="cursor: pointer;"
+                                onclick="showNotification('Opening video tutorials...', 'info')">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Video Tutorials</h4>
+                                    <p>Watch step-by-step tutorials</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="cursor: pointer;"
+                                onclick="showNotification('Opening contact form...', 'info')">
+                                <div class="activity-icon purple">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Contact Support</h4>
+                                    <p>Get help from our support team</p>
+                                </div>
+                            </div>
+                            <div class="activity-item" style="cursor: pointer;"
+                                onclick="showNotification('Opening community forum...', 'info')">
+                                <div class="activity-icon orange">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Community Forum</h4>
+                                    <p>Connect with other users</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">System Status</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Website</h4>
+                                    <p>All systems operational</p>
+                                </div>
+                                <div class="activity-time">Online</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Database</h4>
+                                    <p>Running smoothly</p>
+                                </div>
+                                <div class="activity-time">Online</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Payment Gateway</h4>
+                                    <p>Processing normally</p>
+                                </div>
+                                <div class="activity-time">Online</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>API Services</h4>
+                                    <p>All endpoints active</p>
+                                </div>
+                                <div class="activity-time">Online</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-section">
+                    <h3 class="chart-title" style="margin-bottom: 1.5rem;">Frequently Asked Questions</h3>
+
+                    <div class="faq-item active">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How do I add a new product?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Go to the Products page and click the "Add Product" button. Fill in the product details
+                            including name, description, price, and category. You can also upload images and set
+                            inventory levels.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How can I track my sales?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Use the Dashboard for real-time sales data or go to the Analytics page for detailed reports.
+                            You can filter by date range, product category, or customer segment.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How do I manage customer orders?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Navigate to the Orders page to view all customer orders. You can update order status,
+                            process refunds, and send shipping notifications from this page.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Can I export my data?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes, you can export product lists, order history, and financial reports in CSV or Excel
+                            format from their respective pages using the export buttons.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How do I set up promotions?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Edit any product and check the "Mark as Promotion" box. Set the discount percentage and
+                            promotion period. Promotional products will be highlighted on the customer-facing store.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Contact Support</h3>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-input" id="supportSubject"
+                            placeholder="What do you need help with?">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="supportDescription" rows="4"
+                            placeholder="Please describe your issue in detail..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" id="supportPriority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;"
+                        onclick="showNotification('Support ticket submitted successfully!', 'success')">
+                        <i class="fas fa-paper-plane"></i> Submit Support Request
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Product Details</h3>
+                <button class="modal-close" id="closeProductModal">&times;</button>
+            </div>
+            <div class="modal-body" id="productModalContent">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="productFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productFormTitle">Add New Product</h3>
+                <button class="modal-close" id="closeProductFormModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-input" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select" id="productBrand" required>
+                                <option value="dell">Dell</option>
+                                <option value="hp">HP</option>
+                                <option value="apple">Apple</option>
+                                <option value="lenovo">Lenovo</option>
+                                <option value="asus">Asus</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="productType" required>
+                                <option value="laptop">Laptop</option>
+                                <option value="desktop">Desktop</option>
+                                <option value="accessory">Accessory</option>
+                                <option value="monitor">Monitor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price ($)</label>
+                            <input type="number" class="form-input" id="productPrice" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="productSpecs" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Stock Quantity</label>
+                            <input type="number" class="form-input" id="productStock" min="0" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Discount (%)</label>
+                            <input type="number" class="form-input" id="productDiscount" min="0" max="100" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="productPromotion">
+                            <span>Mark as Promotion</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="saveProductBtn">
+                        Save Product
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">Your Shopping Cart</h3>
+                <button class="modal-close" id="closeCartModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="cartItems">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="cartSubtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (10%):</span>
+                        <span id="cartTax">$0.00</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total:</span>
+                        <span id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="checkoutBtn">
+                        <i class="fas fa-shopping-bag"></i> Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Form Modal -->
+    <div class="modal" id="orderFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Order</h3>
+                <button class="modal-close" id="closeOrderFormModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label class="form-label">Customer Name</label>
+                        <input type="text" class="form-input" id="orderCustomer" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Products</label>
+                            <select class="form-select" id="orderProducts" multiple>
+                                <!-- Products will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Amount ($)</label>
+                            <input type="number" class="form-input" id="orderTotal" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="orderStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="processing">Processing</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Create Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
